@@ -32,6 +32,12 @@ public class FitBitDevice {
 		
 	}
 	
+	public void connectToProfile(){
+		SyncPlatform p = new SyncPlatform;
+		//Leaving the method here until Sync Platform / Initializer
+		//responsibilities are more thought out.
+	}
+	
 	//Setter functions for the instance variables.
 	
 	public void setStepGoal(int step){
