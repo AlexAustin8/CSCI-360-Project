@@ -1,12 +1,12 @@
 import java.util.*;
 public class Day {
-	private String date;
+	private Calendar date;
 	private int stepsTaken;
 	private float distance;
 	private boolean goalMet;
 
 	
-	public Day(String newDate,int stepCount,float dist,boolean goal){
+	public Day(Calendar newDate,int stepCount,float dist,boolean goal){
 		date = newDate;
 		stepsTaken = stepCount;
 		distance = dist;
