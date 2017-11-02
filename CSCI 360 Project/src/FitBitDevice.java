@@ -33,7 +33,7 @@ public class FitBitDevice {
 	}
 	
 	public void connectToProfile(){
-		SyncPlatform p = new SyncPlatform;
+		SyncPlatform p = new SyncPlatform();
 		//Leaving the method here until Sync Platform / Initializer
 		//responsibilities are more thought out.
 	}
