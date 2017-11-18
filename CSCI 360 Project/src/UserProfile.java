@@ -7,7 +7,7 @@ public class UserProfile {
 	private float weight;
 	private ArrayList<Day> history;
 	
-	//Some Getter Functions
+	
 	public UserProfile(String[] profileVals){
 		profileID = profileVals[0];
 		username = profileVals[1];
@@ -21,6 +21,7 @@ public class UserProfile {
 		linkedDevices.add(deviceId);
 	}
 	
+	//Some Getter Functions
 	public String getProfileID(){
 		return profileID;
 		
