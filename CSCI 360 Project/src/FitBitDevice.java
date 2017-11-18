@@ -1,10 +1,11 @@
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.time.*;
 public class FitBitDevice {
 	private String profileID, deviceID;
+	private String currDate = "unset";
 	//String date has been changed to Calendar currDate
-	private Calendar currDate = Calendar.getInstance();
-	//I think that we can use Calendar for time, so we may be able to delete the time variable
-	private Time time;
+	private deviceClock clock =  new deviceClock();
 	private float strideLength;
 	private int stepGoal;
 	private ArrayList<Day> history = new ArrayList<Day>();
@@ -26,9 +27,8 @@ public class FitBitDevice {
 		boolean goal = (stepGoal <= steps);
 		Day d = new Day(currDate, steps, dist,goal);
 		history.add(d);
-		currDate.roll(currDate.DATE, 1);
 		//Note that this may not be syntactically correct. More research should be done
-		//into the Calendar class to see the proper way to increment date by 1.
+		return d;
 		
 	}
 	
@@ -42,6 +42,10 @@ public class FitBitDevice {
 	
 	public void setStepGoal(int step){
 		stepGoal = step;
+	}
+	
+	public void setCurrDate(String s){
+		currDate = s;
 	}
 	
 	public void setProfileID(String id){
@@ -78,6 +82,37 @@ public class FitBitDevice {
 	
 	public ArrayList<Day> getHistory(){
 		return history;
+	}
+	
+	public String getTime(){
+		return clock.getTime();
+	    
+	}
+	
+	public String getDate(){
+		String date = clock.getDate();
+		if(currDate.compareTo("unset")==0){
+			currDate = date;
+		}else if(currDate.compareTo(date) != 0){
+			saveDay();
+		}
+		
+		return date;
+	}
+	
+	public static void main(String args[]){
+		FitBitDevice f = new FitBitDevice();
+		System.out.println(f.history.toString());
+		System.out.println(f.getDate());
+		System.out.println(f.getDate());
+		System.out.println(f.history.toString());
+		
+	    
+	    
+	     
+		
+
+		
 	}
 	
 	
