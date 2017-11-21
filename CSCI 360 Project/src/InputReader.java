@@ -1,13 +1,13 @@
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
-import java.util.Stack;
+import java.util.*;
 
 public class InputReader {
 	private int currentStepCount;
 	private int currentHeartRate;
-	private StepSensor sSensor = new StepSensor();
-	private HeartbeatSensor hSensor = new HeartbeatSensor();
-	private Stack<Instant> heartBeatArray = new Stack<Instant>();	
+	//private StepSensor sSensor = new StepSensor();
+	private Stack<Instant> heartBeatArray = new Stack<Instant>();
+	private ArrayList<Integer> avgData = new ArrayList<Integer>();
 
 	
 	
@@ -24,7 +24,10 @@ public class InputReader {
 	    
 	}
 	public void setCurrentHeartRate(){
-		Instant first = heartBeatArray.pop();
+		if(heartBeatArray.size() < 3){
+			currentHeartRate = 0;
+		}
+		Instant first = heartBeatArray.pop ();
 		Instant second = heartBeatArray.pop();
 	    Instant third = heartBeatArray.pop();
 		
@@ -37,14 +40,13 @@ public class InputReader {
 		long oneTwoDiff = secondTime - firstTime;
 		long twoThreeDiff = thirdTime - secondTime;
 		long avg = (Math.abs(oneTwoDiff) + Math.abs(twoThreeDiff))/ 2;
-  		avg = 60000 / avg;
-		
-		System.out.println(avg);
-		//TODO: I currently have this function setting the avg as currentHeartRate,
-		//however we must find some formula to convert the average distance between three beats
-		//into a Beats-Per-Minute value. I'm sure there's some way to do this.
-		
-		currentHeartRate = (int)avg;
+		if (avg == 0){
+			currentHeartRate = 0;
+		}else{
+  		    avg = 60000 / avg;
+	     	avgData.add((int)avg);
+		    currentHeartRate = (int)avg;
+		}
 				
 		
 	}
@@ -55,15 +57,37 @@ public class InputReader {
 	
 	
 	public int getAvgHeartRate(){
-		int k = 0;
-		return k;
+		if(avgData.size() == 0){
+			return 0;
+		}
+		int tot = 0;
+		for(int i = 0; i<avgData.size(); i++){
+			tot += avgData.get(i);
+		}
+		int avg = tot/avgData.size();
+		avgData.clear();
+		return avg;
+	}
+	
+	/**
+	 * 
+	 * @param num
+	 * Note that this function is not actually used in implementation, but is defined
+	 * here for testing purposes.
+	 */
+	public void addToAvgData(int num){
+		avgData.add(num);
+		
+	}
+	
+	public void resetSteps(){
+		currentStepCount = 0;
 	}
     
 	public int getCurrentStepCount(){
 		return currentStepCount;
 	}
 	public int[] getCurrentData(){
-		currentHeartRate = hSensor.getCurrentHeartRate();
 		int[] vals = {currentHeartRate, currentStepCount};
 		return vals;
 		

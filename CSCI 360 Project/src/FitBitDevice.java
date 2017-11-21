@@ -1,41 +1,69 @@
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.time.*;
+
 public class FitBitDevice {
+	
+	
+	//Variable Declarations
 	private String profileID, deviceID;
 	private String currDate = "unset";
-	//String date has been changed to Calendar currDate
+	private String state = "normal";
+	private SyncPlatform sp;
 	private deviceClock clock =  new deviceClock();
 	private float strideLength;
 	private int stepGoal;
 	private ArrayList<Day> history = new ArrayList<Day>();
 	private InputReader ir = new InputReader();
 	
+	
+	//Method Definitions
+	
+	
 	/**
 	 * Calculates the distance traveled by user by multiplying stepCount by 
 	 * the strideLength
 	 * @return float value representing distance traveled.
 	 */
+	
 	public float calculateDistance(){
 		int steps = ir.getCurrentStepCount();
 		return (steps*strideLength);
 	}
 	
+	
+	/**
+	 * 
+	 * @return Day
+	 * The saveDay method creates a new Day instance with all data relevant to be stored.
+	 * This new instance is than added to history, and returned.
+	 */
+	
 	public Day saveDay(){
 		float dist = calculateDistance();
 		int steps = ir.getCurrentStepCount();
+		int avgRate = ir.getAvgHeartRate();
 		boolean goal = (stepGoal <= steps);
-		Day d = new Day(currDate, steps, dist,goal);
+		Day d = new Day(currDate, steps, dist,goal, avgRate);
 		history.add(d);
-		//Note that this may not be syntactically correct. More research should be done
+		ir.resetSteps();
 		return d;
 		
 	}
+	
+	/**
+	 * connectToProfile is a method utilized to connect to a given user profile. Note that, although it is not specified in design
+	 * For the purpose of this prototype, FitBit serves as a creator for SyncPlatform, for demonstration purposes.
+	 */
 	
 	public void connectToProfile(){
 		SyncPlatform p = new SyncPlatform();
 		//Leaving the method here until Sync Platform / Initializer
 		//responsibilities are more thought out.
+	}
+	
+	public void sync(){
+		 S
 	}
 	
 	//Setter functions for the instance variables.
@@ -50,6 +78,9 @@ public class FitBitDevice {
 	
 	public void setProfileID(String id){
 		profileID = id;
+	}
+	public void setSyncPlatform(SyncPlatform s){
+		sp = s;
 	}
 	
 	public void setDeviceID(String id){
@@ -80,14 +111,26 @@ public class FitBitDevice {
 		return strideLength;
 	}
 	
+	
 	public ArrayList<Day> getHistory(){
 		return history;
 	}
 	
 	public String getTime(){
 		return clock.getTime();
-	    
 	}
+	
+	public int getCurrentSteps(){
+		return ir.getCurrentStepCount();
+	}
+	
+	
+	/**
+	 * 
+	 * @return String Date
+	 * Note How this method is not only used to retrieve a date value, but also to do a check to see whether or not the
+	 * date has changed, and if so, the saveDay operation is then performed.
+	 */
 	
 	public String getDate(){
 		String date = clock.getDate();
@@ -95,9 +138,18 @@ public class FitBitDevice {
 			currDate = date;
 		}else if(currDate.compareTo(date) != 0){
 			saveDay();
+			currDate = date;
 		}
 		
 		return date;
+	}
+	
+	public void connectToPlatform(){
+		state = "Connected";
+	}
+	
+	public void profileSync(){
+		
 	}
 	
 	public static void main(String args[]){

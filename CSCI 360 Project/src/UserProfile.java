@@ -14,6 +14,7 @@ public class UserProfile {
 		strideLength = Float.parseFloat(profileVals[2]);
 		weight = Float.parseFloat(profileVals[3]);
 		linkedDevices = new ArrayList<String>();
+		history = new ArrayList<Day>();
 		
 	}
 	
@@ -48,6 +49,25 @@ public class UserProfile {
 		}
 		return false;
 	
+	}
+	public boolean equalHistory(ArrayList<Day> newHist){
+	   if(newHist == null && this.history == null){
+		   return true; 
+	   }else if(newHist == null && this.history != null){
+		   return false;
+	   }else if(newHist != null && this.history == null){
+		   return false;
+	   }else if(newHist.size() != this.history.size()){
+		   return false;
+	   }
+	   for(Day d: newHist){
+		   if(!this.history.contains(d)){
+			   return false;
+		   }
+	   }
+	   return true;
+	   
+	   
 	}
 	
 	public void addToHistory(Day d){

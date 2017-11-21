@@ -12,6 +12,12 @@ public class InputReaderTest extends TestCase {
 		}
 
 		@Test
+		/**
+		 * Tests for the setCurrentHeartRate Method in InputReader
+		 * 
+		 */
+		
+		
 		public void testSetCurrentHeartRate1() {
 			try{
 				ir.detectHeartbeat();
@@ -51,6 +57,36 @@ public class InputReaderTest extends TestCase {
 			}
 			ir.setCurrentHeartRate();
 			assertEquals(30, ir.getCurrentHeartRate(), 1);
+		}
+		public void testSetCurrentHeartRate4() {
+			try{
+				ir.detectHeartbeat();
+				ir.detectHeartbeat();
+				ir.detectHeartbeat();
+			}catch(Exception e){
+				System.out.println(e.getMessage());
+			}
+			ir.setCurrentHeartRate();
+			assertEquals(0, ir.getCurrentHeartRate(), 1);
+		}
+		
+		
+		
+		/**
+		 * Tests for the getAvgHeartRate Method in InputReader
+		 */
+		
+		
+		
+		
+		public void testGetAvgHeartRate1() {
+			ir.addToAvgData(50);
+			ir.addToAvgData(150);
+			ir.addToAvgData(100);
+			assertEquals(100, ir.getAvgHeartRate(), 1);
+		}
+		public void testGetAvgHeartRate2() {
+			assertEquals(0, ir.getAvgHeartRate(), 1);
 		}
 	}
 		

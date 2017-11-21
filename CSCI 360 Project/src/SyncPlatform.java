@@ -1,17 +1,12 @@
 import java.util.*;
-/**
- * NOTE: Before more work is done in this class, we must
- * better define Initializer vs. SyncPlatform responsibilities. 
- * Let's Consider States to detect connectivity
- * @author Alex
- *
- */
+
 public class SyncPlatform {
 	private ArrayList<UserProfile> profiles = new ArrayList<UserProfile>();
 	
 	
-	public void initialize(){		
-		String[] profileVals = enterProfileData();
+	public void initialize(String[] profileVals){		
+		//String[] profileVals = enterProfileData();
+		
 		UserProfile d = new UserProfile(profileVals);
 	    profiles.add(d);
 		
@@ -52,7 +47,7 @@ public class SyncPlatform {
 	 * @return User profile object that contains profileID as 
 	 * its profileID. If not found, function returns null
 	 */
-	private UserProfile getProfile(String profileID){
+	public UserProfile getProfile(String profileID){
 		for(int i = 0; i < profiles.size(); i++){
 			UserProfile temp = profiles.get(i);
 			String tempID = temp.getProfileID();
@@ -76,19 +71,62 @@ public class SyncPlatform {
 	public void calcDateDifference(ArrayList<Day> devHist, ArrayList<Day> profileHist){
 	}
 	
+	public void addProfile(UserProfile up){
+		profiles.add(up);
+	}
+	
 	
 	
 	public void profileSync(String devID, String profileID, ArrayList<Day> devHist){
-		UserProfile u = getProfile(profileID);
-		if(u!=null){
-		    if (u.verifyLinkedDevice(devID)){
-		    	ArrayList<Day> profileHist = u.getHistory();
-		    	//TODO: The rest of the profileSync function can be determined once
-		    	//The calcDateDifference is figured out
-		    }
+		if(devHist!=null){
+		  UserProfile u = getProfile(profileID);
+		  if(u!=null){
+		     if (u.verifyLinkedDevice(devID)){
+		     	ArrayList<Day> profileHist = u.getHistory();
+		     	int lastDev = devHist.size();
+		    	int lastProf = profileHist.size();
+		    	while(lastProf < lastDev){
+		    		u.addToHistory(devHist.get(lastProf));
+		    		lastProf++;
+		    	}
+		    	assert(u.equalHistory(devHist));		    	
+		     }
 			
-		    }
+		   }
 	    }
+	}
+	
+	//Methods to allow for FitBitDevice Interaction with User Profiles, Primarily For Testing/Prototype Purposes
+	
+	
+	public void addtoProfileHistory(String profileID, Day d){
+		UserProfile temp = getProfile(profileID);
+		temp.addToHistory(d);
+		for(int i = 0; i < profiles.size(); i++){
+			UserProfile up = profiles.get(i);
+			String upID = temp.getProfileID();
+			if(upID.equals(profileID)){
+				profiles.set(i, temp);
+			}
+		
+	     }
+	}
+	
+	public void addToLinkedDevices(String profileID, String deviceID){
+		UserProfile temp = getProfile(profileID);
+		temp.addToLinkedDevices(deviceID);
+		for(int i = 0; i < profiles.size(); i++){
+			UserProfile up = profiles.get(i);
+			String upID = temp.getProfileID();
+			if(upID.equals(profileID)){
+				profiles.set(i, temp);
+			}
+		
+	     }
+		
+
+		
+	}
 	
 
 }

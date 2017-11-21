@@ -1,16 +1,33 @@
 import java.util.*;
 public class Day {
 	private String date;
-	private int stepsTaken;
+	private int stepsTaken, avgHeartRate;
 	private float distance;
 	private boolean goalMet;
 
 	
-	public Day(String newDate,int stepCount,float dist,boolean goal){
+	public Day(String newDate,int stepCount,float dist,boolean goal, int avgRate){
 		date = newDate;
 		stepsTaken = stepCount;
 		distance = dist;
 		goalMet = goal;
+		avgHeartRate = avgRate;
+	}
+	
+	public int compareTo(Day d){
+		if(this.date.compareTo(d.getDate()) < 0){
+			return -1;
+		}
+		else if(this.date.compareTo(d.getDate()) == 0){
+			return 0;
+		}
+		else{
+			return 1;
+		}
+	}
+	
+	public String getDate(){
+		return date;
 	}
 	
 	
@@ -21,6 +38,7 @@ public class Day {
 		}
 		return("Date: " + date + " Steps Taken:" + stepsTaken + " Distance Walked: " + distance + " " + goal);
 	}
+	
 	
 	
 	
