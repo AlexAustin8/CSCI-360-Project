@@ -29,10 +29,11 @@ public class deviceClock {
 	    String day = String.format("%02d", d);
 	    String weekDay = ep.toString();
         
-	    String date = weekDay + ", " + mon + "/" + day + "/" + yr;
+	    String date = yr + "/" + mon + "/" + day + "," + weekDay;
 	    return date;
 		
 	}
+	
 	
 
 }
