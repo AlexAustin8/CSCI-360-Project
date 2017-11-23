@@ -6,7 +6,7 @@ public class InputReader {
 	private int currentStepCount;
 	private int currentHeartRate;
 	//private StepSensor sSensor = new StepSensor();
-	private Stack<Instant> heartBeatArray = new Stack<Instant>();
+	private ArrayList<Instant> heartBeatArray = new ArrayList<Instant>();
 	private ArrayList<Integer> avgData = new ArrayList<Integer>();
 
 	
@@ -19,36 +19,37 @@ public class InputReader {
 	
 	public void detectHeartbeat(){
 	    Instant t = Instant.now();
-	    heartBeatArray.push(t);
+	    heartBeatArray.add(t);
 	    
 	    
 	}
 	public void setCurrentHeartRate(){
 		if(heartBeatArray.size() < 3){
 			currentHeartRate = 0;
-		}
-		Instant first = heartBeatArray.pop ();
-		Instant second = heartBeatArray.pop();
-	    Instant third = heartBeatArray.pop();
-		
-		//Get comparable values for the Instant variables
-		long firstTime = first.toEpochMilli();
-		long secondTime = second.toEpochMilli();
-		long thirdTime = third.toEpochMilli();
-		
-		
-		long oneTwoDiff = secondTime - firstTime;
-		long twoThreeDiff = thirdTime - secondTime;
-		long avg = (Math.abs(oneTwoDiff) + Math.abs(twoThreeDiff))/ 2;
-		if (avg == 0){
-			currentHeartRate = 0;
 		}else{
-  		    avg = 60000 / avg;
-	     	avgData.add((int)avg);
-		    currentHeartRate = (int)avg;
+		  Instant first = heartBeatArray.get(heartBeatArray.size()-1);
+		  Instant second = heartBeatArray.get(heartBeatArray.size()-2);
+	      Instant third = heartBeatArray.get(heartBeatArray.size()-3);
+		
+	    	//Get comparable values for the Instant variables
+		  long firstTime = first.toEpochMilli();
+		  long secondTime = second.toEpochMilli();
+		  long thirdTime = third.toEpochMilli();
+		
+		
+		  long oneTwoDiff = secondTime - firstTime;
+	   	  long twoThreeDiff = thirdTime - secondTime;
+		  long avg = (Math.abs(oneTwoDiff) + Math.abs(twoThreeDiff))/ 2;
+		  if (avg == 0){
+		  	  currentHeartRate = 0;
+		  }else{
+  		      avg = 60000 / avg;
+	       	  avgData.add((int)avg);
+		      currentHeartRate = (int)avg;
 		}
 				
 		
+	  }
 	}
 	
 	public int getCurrentHeartRate(){
@@ -66,6 +67,7 @@ public class InputReader {
 		}
 		int avg = tot/avgData.size();
 		avgData.clear();
+		heartBeatArray.clear();
 		return avg;
 	}
 	

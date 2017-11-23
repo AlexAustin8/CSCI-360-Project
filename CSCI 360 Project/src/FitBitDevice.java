@@ -31,6 +31,24 @@ public class FitBitDevice {
 		return (steps*strideLength);
 	}
 	
+	public void addToSteps(){
+		this.getDate();
+		ir.stepDetected();
+	}
+	
+	public void detectHeartbeat(){
+		this.getDate();
+		ir.detectHeartbeat();
+	}
+	
+	public int getCurrentHeartrate(){
+		this.getDate();
+		ir.setCurrentHeartRate();
+		return ir.getCurrentHeartRate();
+	}
+	
+	
+	
 	
 	/**
 	 * 
@@ -63,7 +81,7 @@ public class FitBitDevice {
 	}
 	
 	public void sync(){
-		 S
+		 
 	}
 	
 	//Setter functions for the instance variables.
@@ -153,12 +171,19 @@ public class FitBitDevice {
 	}
 	
 	public static void main(String args[]){
+		try{
 		FitBitDevice f = new FitBitDevice();
-		System.out.println(f.history.toString());
+		f.addToSteps();
 		System.out.println(f.getDate());
+		System.out.println(f.getCurrentSteps());
+		System.out.println(f.getHistory());
+		TimeUnit.MINUTES.sleep(1);
 		System.out.println(f.getDate());
-		System.out.println(f.history.toString());
-		
+		System.out.println(f.getCurrentSteps());
+		System.out.println(f.getHistory());
+		}catch(Exception e){
+			System.out.println(e.getMessage());
+		}
 	    
 	    
 	     
