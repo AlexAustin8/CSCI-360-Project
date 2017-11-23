@@ -21,6 +21,9 @@ public class deviceClock {
 	    int y = t.getYear();
 	    int m = t.getMonthValue();
 	    int d = t.getDayOfMonth();
+	    //Here the min variable is added to make it so that days change every minute, for presentation purposes.
+	    int min = t.getMinute();
+	    String minute = String.format("%02d", min);
 	    DayOfWeek ep = t.getDayOfWeek();
 	    
 	    
@@ -29,7 +32,8 @@ public class deviceClock {
 	    String day = String.format("%02d", d);
 	    String weekDay = ep.toString();
         
-	    String date = yr + "/" + mon + "/" + day + "," + weekDay;
+	    String date = yr + "/" + mon + "/" + day + "," + weekDay + " : " + minute;
+	    //String date = yr + "/" + mon + "/" + day + "," + weekDay;
 	    return date;
 		
 	}
