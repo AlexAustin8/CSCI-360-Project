@@ -47,6 +47,14 @@ public class FitBitDevice {
 		return ir.getCurrentHeartRate();
 	}
 	
+	public int getStepsUntilGoal(){
+		if(stepGoal == 0 || ir.getCurrentStepCount() > stepGoal){
+			return 0;
+		}else{
+			return(stepGoal - ir.getCurrentStepCount());
+		}
+	}
+	
 	
 	
 	
@@ -170,27 +178,7 @@ public class FitBitDevice {
 		
 	}
 	
-	public static void main(String args[]){
-		try{
-		FitBitDevice f = new FitBitDevice();
-		f.addToSteps();
-		System.out.println(f.getDate());
-		System.out.println(f.getCurrentSteps());
-		System.out.println(f.getHistory());
-		TimeUnit.MINUTES.sleep(1);
-		System.out.println(f.getDate());
-		System.out.println(f.getCurrentSteps());
-		System.out.println(f.getHistory());
-		}catch(Exception e){
-			System.out.println(e.getMessage());
-		}
-	    
-	    
-	     
-		
 
-		
-	}
 	
 	
 	
