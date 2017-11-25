@@ -11,7 +11,7 @@ public class SyncTest extends TestCase {
 	    private Day one;
 	    private Day two;
 	    private Day three;
-	    private String[] vals = new String[]{"profile01","the name", "3536", "235"};
+	    private String[] vals = new String[]{"profile01","the name", "3536", "235", "42"};
 	    @Before
 	    public void setUp() throws Exception{
 	    	sp = new SyncPlatform();
