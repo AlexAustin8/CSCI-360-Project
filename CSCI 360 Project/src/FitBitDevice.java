@@ -16,6 +16,28 @@ public class FitBitDevice {
 	private ArrayList<Day> history = new ArrayList<Day>();
 	private InputReader ir = new InputReader();
 	
+	//Constructors
+	public FitBitDevice(){
+	}
+	
+    /**
+     * 
+     * @param id
+     * The purpose of this constructor is to make it so that a profile is created and usable.
+     * This is done for demonstration purposes.
+     */
+	public FitBitDevice(String id){
+		profileID = id;
+		sp = new SyncPlatform();
+		String[] vals = {id, "username", "2.3","423", "100"};
+		sp.initialize(vals);
+		connectToProfile();
+	}
+	
+	
+	
+	
+	
 	
 	//Method Definitions
 	
@@ -55,6 +77,11 @@ public class FitBitDevice {
 		}
 	}
 	
+	public String getLastDayData(){
+		Day d = history.get(history.size()-1);
+		return d.toString();
+	}
+	
 	
 	
 	
@@ -83,9 +110,9 @@ public class FitBitDevice {
 	 */
 	
 	public void connectToProfile(){
-		SyncPlatform p = new SyncPlatform();
-		//Leaving the method here until Sync Platform / Initializer
-		//responsibilities are more thought out.
+		UserProfile up = sp.getProfile(profileID);
+		strideLength = up.getStrideLength();
+		stepGoal = up.getStepgoal();
 	}
 	
 	public void sync(){

@@ -5,6 +5,7 @@ public class UserProfile {
 	private String username;
 	private float strideLength;
 	private float weight;
+	private int stepGoal;
 	private ArrayList<Day> history;
 	
 	
@@ -13,6 +14,7 @@ public class UserProfile {
 		username = profileVals[1];
 		strideLength = Float.parseFloat(profileVals[2]);
 		weight = Float.parseFloat(profileVals[3]);
+		stepGoal = Integer.parseInt(profileVals[4]);
 		linkedDevices = new ArrayList<String>();
 		history = new ArrayList<Day>();
 		
@@ -39,6 +41,10 @@ public class UserProfile {
 
 	public ArrayList<Day> getHistory(){
 		return history;
+	}
+	
+	public int getStepgoal(){
+		return stepGoal;
 	}
 	
 	public boolean verifyLinkedDevice(String deviceID){

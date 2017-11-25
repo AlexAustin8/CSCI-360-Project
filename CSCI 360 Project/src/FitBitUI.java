@@ -25,17 +25,18 @@ public class FitBitUI implements ActionListener{
 	private static String timeLabelPrefix = "Current Time: ";
 	private static String dateLabelPrefix = "Current Date: ";
 	private static String goalLabelPrefix = "Steps Until Goal Reached: ";
-    private int numSteps = 0;
-    private String activeFrame = "none";
+	private static String historyLabelPrefix = "Number of Days Recorded: ";
+    private int activeFrame = 0;
     //private String time = "";
     private static JFrame frame = new JFrame();
     private JButton changeDisplay = new JButton("Change Display");
-    private FitBitDevice f = new FitBitDevice();
+    private FitBitDevice f = new FitBitDevice("profileID");
     final JLabel stepLabel = new JLabel(stepLabelPrefix + "0    ");
     final JLabel heartLabel = new JLabel(heartLabelPrefix + "0    ");
     final JLabel timeLabel = new JLabel(timeLabelPrefix + f.getTime());
     final JLabel dateLabel = new JLabel(dateLabelPrefix + f.getDate());
-    final JLabel goalLabel = new JLabel(goalLabelPrefix + f.getStepsUntilGoal());
+    final JLabel goalLabel = new JLabel(goalLabelPrefix + "0    ");
+    final JLabel historyLabel = new JLabel(historyLabelPrefix + "0    ");
     final static String LOOKANDFEEL = "System";
     
     
@@ -45,25 +46,18 @@ public class FitBitUI implements ActionListener{
     
     
     public JPanel createStepViewComponents() {
-    	activeFrame = "step";
+    	activeFrame = 1;
         JButton takeStep = new JButton("Take Step");
         takeStep.setMnemonic(KeyEvent.VK_I);
         takeStep.addActionListener(this);
-        changeDisplay.addActionListener(this);
         stepLabel.setLabelFor(takeStep);
-        
-        /*
-         * An easy way to put space between a top-level container
-         * and its contents is to put the contents in a JPanel
-         * that has an "empty" border.
-         */
         JPanel pane = new JPanel(new GridLayout(0, 1));
         pane.add(takeStep);
         pane.add(changeDisplay);
         pane.add(stepLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                30, //left
+                40, //left
                 10, //bottom
                 40) //right
                 );
@@ -72,7 +66,7 @@ public class FitBitUI implements ActionListener{
     }
     
     public JPanel createHeartbeatViewComponents() {
-    	activeFrame = "heart";
+    	activeFrame = 2;
         JButton detectHeartbeat = new JButton("Detect Heartbeat");
         detectHeartbeat.setMnemonic(KeyEvent.VK_I);
         detectHeartbeat.addActionListener(this);
@@ -84,7 +78,7 @@ public class FitBitUI implements ActionListener{
         pane.add(heartLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                30, //left
+                40, //left
                 10, //bottom
                 40) //right
                 );
@@ -93,14 +87,14 @@ public class FitBitUI implements ActionListener{
     }
     
     public JPanel createTimeViewComponents() {
-    	activeFrame = "time";
+    	activeFrame = 3;
         JPanel pane = new JPanel(new GridLayout(0, 1));
         pane.add(changeDisplay);
         pane.add(timeLabel);
         int i = 0;
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                30, //left
+                40, //left
                 10, //bottom
                 40) //right
                 );
@@ -109,13 +103,13 @@ public class FitBitUI implements ActionListener{
     }
     
     public JPanel createDateViewComponents() {
-    	activeFrame = "date";
+    	activeFrame = 4;
         JPanel pane = new JPanel(new GridLayout(0, 1));
         pane.add(changeDisplay);
         pane.add(dateLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                30, //left
+                40, //left
                 10, //bottom
                 40) //right
                 );
@@ -124,13 +118,30 @@ public class FitBitUI implements ActionListener{
     }
     
     public JPanel createGoalViewComponents() {
-    	activeFrame = "goal";
+    	activeFrame = 5;
         JPanel pane = new JPanel(new GridLayout(0, 1));
         pane.add(changeDisplay);
+        goalLabel.setText("Steps until goal reached: " + f.getStepsUntilGoal());
         pane.add(goalLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                30, //left
+                40, //left
+                10, //bottom
+                40) //right
+                );
+        
+        return pane;
+    }
+    
+    public JPanel createHistoryViewComponents() {
+    	activeFrame = 6;
+        JPanel pane = new JPanel(new GridLayout(0, 1));
+        pane.add(changeDisplay);
+        historyLabel.setText("Number of Days Recorded: " + f.getHistory().size() + " Last Day Info: " + f.getLastDayData());
+        pane.add(historyLabel);
+        pane.setBorder(BorderFactory.createEmptyBorder(
+                30, //top
+                40, //left
                 10, //bottom
                 40) //right
                 );
@@ -139,48 +150,61 @@ public class FitBitUI implements ActionListener{
     }
     
     public void actionPerformed(ActionEvent e) {
-    	if(activeFrame.compareTo("heart") == 0){
-    		if(e.getSource() == changeDisplay){
-    			JPanel contents = this.createTimeViewComponents();
-    			frame.setContentPane(contents);
-    			frame.invalidate();
-    			frame.validate();
-    	    }else{
-    		     f.detectHeartbeat();
-    		     heartLabel.setText("Current Heart Rate: " + f.getCurrentHeartrate());
-    		}
-    	}else if(activeFrame.compareTo("step") == 0){
+    	if(activeFrame == 1){
     		if(e.getSource() == changeDisplay){
     			JPanel contents = this.createHeartbeatViewComponents();
     			frame.setContentPane(contents);
     			frame.invalidate();
     			frame.validate();
-    		}else{
-    		f.addToSteps();
-    		stepLabel.setText("Current Step Count: " + f.getCurrentSteps());
+    	    }else{
+    	    	f.addToSteps();
+        		stepLabel.setText("Current Step Count: " + f.getCurrentSteps());
+    		     
     		}
-    	}else if(activeFrame.compareTo("time") == 0){
+    	}else if(activeFrame == 2){
+    		if(e.getSource() == changeDisplay){
+    			JPanel contents = this.createTimeViewComponents();
+    			frame.setContentPane(contents);
+    			frame.invalidate();
+    			frame.validate();
+    		}else{
+    		    f.detectHeartbeat();
+   		        heartLabel.setText("Current Heart Rate: " + f.getCurrentHeartrate());
+    		
+    		}
+    	}else if(activeFrame == 3){
     		if(e.getSource() == changeDisplay){
     			JPanel contents = this.createDateViewComponents();
     			frame.setContentPane(contents);
     			frame.invalidate();
     			frame.validate();
     		}
-    	}else if(activeFrame.compareTo("date") == 0){
+    	}else if(activeFrame == 4){
         	if(e.getSource() == changeDisplay){
         		JPanel contents = this.createGoalViewComponents();
         		frame.setContentPane(contents);
         		frame.invalidate();
         		frame.validate();
         	}
-       }else if(activeFrame.compareTo("goal") == 0){
+       }else if(activeFrame == 5){
+        	if(e.getSource() == changeDisplay){
+    	    	JPanel contents = this.createHistoryViewComponents();
+    	    	frame.setContentPane(contents);
+    		    frame.invalidate();
+    		    frame.validate();
+        	}
+    	}else if(activeFrame == 6){
         	if(e.getSource() == changeDisplay){
     	    	JPanel contents = this.createStepViewComponents();
     	    	frame.setContentPane(contents);
     		    frame.invalidate();
     		    frame.validate();
     	}
-  }
+  
+    }
+    }
+    public void setChangeListener(){
+        changeDisplay.addActionListener(this);
     }
     
     private static void initLookAndFeel() {
@@ -241,6 +265,7 @@ public class FitBitUI implements ActionListener{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         FitBitUI app = new FitBitUI();
+        app.setChangeListener();
         JPanel stepContents = app.createStepViewComponents();
         
         frame.getContentPane().add(stepContents, BorderLayout.CENTER);
