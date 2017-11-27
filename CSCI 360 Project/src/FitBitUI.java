@@ -33,7 +33,11 @@ public class FitBitUI implements ActionListener{
     final JLabel syncLabel = new JLabel("Last Sync Date");
     final static String LOOKANDFEEL = "System";
     
-    
+    /**
+     * 
+     * @return stepViewPane
+     * Creates and returns pane to be used for stepView screen
+     */
     public JPanel createStepViewComponents() {
     	activeFrame = 1;
         JButton takeStep = new JButton("Take Step");
@@ -46,14 +50,18 @@ public class FitBitUI implements ActionListener{
         pane.add(stepLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                100, //left
+                50, //left
                 10, //bottom
-                100) //right
+                50) //right
                 );
         
         return pane;
     }
-    
+    /**
+     * 
+     * @return HeartbeatViewPane
+     * Creates and returns pane to be used for HeartbeatView screen
+     */
     public JPanel createHeartbeatViewComponents() {
     	activeFrame = 2;
         JButton detectHeartbeat = new JButton("Detect Heartbeat");
@@ -67,14 +75,20 @@ public class FitBitUI implements ActionListener{
         pane.add(heartLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                100, //left
+                50, //left
                 10, //bottom
-                100) //right
+                50) //right
                 );
         
         return pane;
     }
     
+    
+    /**
+     * 
+     * @return TimeViewPane
+     * Creates and returns pane to be used forTimeView screen
+     */
     public JPanel createTimeViewComponents() {
     	activeFrame = 3;
         JPanel pane = new JPanel(new GridLayout(0, 1));
@@ -83,14 +97,19 @@ public class FitBitUI implements ActionListener{
         int i = 0;
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                100, //left
+                50, //left
                 10, //bottom
-                100) //right
+                50) //right
                 );
         
         return pane;
     }
     
+    /**
+     * 
+     * @return DateViewPane
+     * Creates and returns pane to be used for DateView screen
+     */
     public JPanel createDateViewComponents() {
     	activeFrame = 4;
         JPanel pane = new JPanel(new GridLayout(0, 1));
@@ -98,14 +117,19 @@ public class FitBitUI implements ActionListener{
         pane.add(dateLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                100, //left
+                50, //left
                 10, //bottom
-                100) //right
+                50) //right
                 );
         
         return pane;
     }
     
+    /**
+     * 
+     * @return GoalViewPane
+     * Creates and returns pane to be used for GoalView screen
+     */
     public JPanel createGoalViewComponents() {
     	activeFrame = 5;
         JPanel pane = new JPanel(new GridLayout(0, 1));
@@ -114,53 +138,63 @@ public class FitBitUI implements ActionListener{
         pane.add(goalLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                100, //left
+                50, //left
                 10, //bottom
-                100) //right
+                50) //right
                 );
         
         return pane;
     }
     
+    /**
+     * 
+     * @return HistoryViewPane
+     * Creates and returns pane to be used for HistoryView screen
+     */
     public JPanel createHistoryViewComponents() {
     	activeFrame = 6;
         JPanel pane = new JPanel(new GridLayout(0, 1));
         pane.add(changeDisplay);
-        historyLabel.setText("# of Days Recorded: " + f.getHistory().size() + " Last Date: " + f.getLastDayDate());
+        historyLabel.setText("Days Recorded: " + f.getHistory().size() + " Last Date: " + f.getLastDayDate());
         pane.add(historyLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                100, //left
+                50, //left
                 10, //bottom
-                100) //right
+                50) //right
                 );
         
         return pane;
     }
+    /**
+     * 
+     * @return SyncViewPane
+     * Creates and returns pane to be used for SyncView screen
+     */
     public JPanel createSyncViewComponents() {
     	activeFrame = 7;
         JButton sync = new JButton("Sync Device");
         sync.setMnemonic(KeyEvent.VK_I);
         sync.addActionListener(this);
-        syncLabel.setText("Last Sync Date: " + f.getLastSyncDate());
-        historyLabel.setText("# of Days Recorded: " + f.getHistory().size() + " Last Date: " + f.getLastDayDate());
-        syncLabel.setLabelFor(sync);
+        syncLabel.setText("Last Sync Date: " + f.getLastSyncDate() + ", " + f.getDaySteps(f.getLastSyncDate()));
         
-        JPanel pane = new JPanel(new GridLayout(0, 2));
+        JPanel pane = new JPanel(new GridLayout(0, 1));
         pane.add(sync);
         pane.add(changeDisplay);
-        pane.add(historyLabel);
         pane.add(syncLabel, BorderLayout.SOUTH);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                100, //left
+                50, //left
                 10, //bottom
-                100) //right
+                50) //right
                 );
         
         return pane;
     }
-    
+    /**
+     * the action performed method checks the current active frame, detects
+     * the button that caused the response, and acts accordingly
+     */
     public void actionPerformed(ActionEvent e) {
      	if(activeFrame == 1){
     		if(e.getSource() == changeDisplay){
@@ -220,12 +254,17 @@ public class FitBitUI implements ActionListener{
     		    frame.validate();
            	}else{
            		f.sync();
-           		syncLabel.setText("Last Sync Date: " + f.getLastSyncDate());
-                historyLabel.setText("# of Days Recorded: " + f.getHistory().size() + " Last Date: " + f.getLastDayDate());
+           		syncLabel.setText("Last Sync Date: " + f.getLastSyncDate() + ", " + f.getDaySteps(f.getLastSyncDate()));
+                
            	}
   
     }
     }
+    
+    /**
+     * Adds an actionListener to the class button changeDisplay
+     * so that all can use it
+     */
     public void setChangeListener(){
         changeDisplay.addActionListener(this);
     }
