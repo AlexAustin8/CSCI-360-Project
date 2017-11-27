@@ -5,7 +5,6 @@ import java.util.*;
 public class InputReader {
 	private int currentStepCount;
 	private int currentHeartRate;
-	//private StepSensor sSensor = new StepSensor();
 	private ArrayList<Instant> heartBeatArray = new ArrayList<Instant>();
 	private ArrayList<Integer> avgData = new ArrayList<Integer>();
 
@@ -23,6 +22,12 @@ public class InputReader {
 	    
 	    
 	}
+	/**
+	 * The setCurrentHeartRate() method checks to see if there are at least 3 objects in heartBeatArray, and if so
+	 * converts the objects in to a value representing milliseconds since epoch date. The difference is then calculated
+	 * between the 2nd and 1st values, as well as the 3rd and 2nd values, and an average is then calculated from these two
+	 * values and this average is then computed in to a value that represents average bpm
+	 */
 	public void setCurrentHeartRate(){
 		if(heartBeatArray.size() < 3){
 			currentHeartRate = 0;
@@ -56,7 +61,17 @@ public class InputReader {
 		return currentHeartRate;
 	}
 	
-	
+	/**
+	 * 
+	 * @return avg
+	 * 
+	 * The getAvgHeartRate() method calculates the average heart rate for a full period by finding the average of all
+	 * values saved in the avgData ArrayList. This value is returned.
+	 * 
+	 * Note that since this operation is only intended to be called as a part of FitBitDevice's saveDay() operation
+	 *both ArrayLists are emptied to hold values for the new day.
+	 * 
+	 */
 	public int getAvgHeartRate(){
 		if(avgData.size() == 0){
 			return 0;

@@ -20,29 +20,18 @@ import java.awt.event.*;
 
 
 public class FitBitUI implements ActionListener{
-	private static String stepLabelPrefix = "Number of Steps Taken: ";
-	private static String heartLabelPrefix = "Current Heart Rate: ";
-	private static String timeLabelPrefix = "Current Time: ";
-	private static String dateLabelPrefix = "Current Date: ";
-	private static String goalLabelPrefix = "Steps Until Goal Reached: ";
-	private static String historyLabelPrefix = "Number of Days Recorded: ";
     private int activeFrame = 0;
-    //private String time = "";
     private static JFrame frame = new JFrame();
     private JButton changeDisplay = new JButton("Change Display");
-    private FitBitDevice f = new FitBitDevice("profileID");
-    final JLabel stepLabel = new JLabel(stepLabelPrefix + "0    ");
-    final JLabel heartLabel = new JLabel(heartLabelPrefix + "0    ");
-    final JLabel timeLabel = new JLabel(timeLabelPrefix + f.getTime());
-    final JLabel dateLabel = new JLabel(dateLabelPrefix + f.getDate());
-    final JLabel goalLabel = new JLabel(goalLabelPrefix + "0    ");
-    final JLabel historyLabel = new JLabel(historyLabelPrefix + "0    ");
+    private FitBitDevice f = new FitBitDevice();
+    final JLabel stepLabel = new JLabel("Number of Steps Taken: " + "0    ");
+    final JLabel heartLabel = new JLabel("Current Heart Rate: " + "0    ");
+    final JLabel timeLabel = new JLabel("Current Time: " + f.getTime());
+    final JLabel dateLabel = new JLabel("Current Date: " + f.getDate());
+    final JLabel goalLabel = new JLabel("Steps Until Goal Reached: " + "0    ");
+    final JLabel historyLabel = new JLabel("# of Days Recorded: " + "0    ");
+    final JLabel syncLabel = new JLabel("Last Sync Date");
     final static String LOOKANDFEEL = "System";
-    
-    
-    public static interface Listener{
-    	public void varChanged(Object oldVar, Object newVar);
-    }
     
     
     public JPanel createStepViewComponents() {
@@ -51,15 +40,15 @@ public class FitBitUI implements ActionListener{
         takeStep.setMnemonic(KeyEvent.VK_I);
         takeStep.addActionListener(this);
         stepLabel.setLabelFor(takeStep);
-        JPanel pane = new JPanel(new GridLayout(0, 1));
+        JPanel pane = new JPanel(new GridLayout(0, 2));
         pane.add(takeStep);
         pane.add(changeDisplay);
         pane.add(stepLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                40, //left
+                100, //left
                 10, //bottom
-                40) //right
+                100) //right
                 );
         
         return pane;
@@ -72,15 +61,15 @@ public class FitBitUI implements ActionListener{
         detectHeartbeat.addActionListener(this);
         heartLabel.setLabelFor(detectHeartbeat);
         
-        JPanel pane = new JPanel(new GridLayout(0, 1));
+        JPanel pane = new JPanel(new GridLayout(0, 2));
         pane.add(detectHeartbeat);
         pane.add(changeDisplay);
         pane.add(heartLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                40, //left
+                100, //left
                 10, //bottom
-                40) //right
+                100) //right
                 );
         
         return pane;
@@ -94,9 +83,9 @@ public class FitBitUI implements ActionListener{
         int i = 0;
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                40, //left
+                100, //left
                 10, //bottom
-                40) //right
+                100) //right
                 );
         
         return pane;
@@ -109,9 +98,9 @@ public class FitBitUI implements ActionListener{
         pane.add(dateLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                40, //left
+                100, //left
                 10, //bottom
-                40) //right
+                100) //right
                 );
         
         return pane;
@@ -125,9 +114,9 @@ public class FitBitUI implements ActionListener{
         pane.add(goalLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                40, //left
+                100, //left
                 10, //bottom
-                40) //right
+                100) //right
                 );
         
         return pane;
@@ -137,20 +126,43 @@ public class FitBitUI implements ActionListener{
     	activeFrame = 6;
         JPanel pane = new JPanel(new GridLayout(0, 1));
         pane.add(changeDisplay);
-        historyLabel.setText("Number of Days Recorded: " + f.getHistory().size() + " Last Day Info: " + f.getLastDayData());
+        historyLabel.setText("# of Days Recorded: " + f.getHistory().size() + " Last Date: " + f.getLastDayDate());
         pane.add(historyLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
-                40, //left
+                100, //left
                 10, //bottom
-                40) //right
+                100) //right
+                );
+        
+        return pane;
+    }
+    public JPanel createSyncViewComponents() {
+    	activeFrame = 7;
+        JButton sync = new JButton("Sync Device");
+        sync.setMnemonic(KeyEvent.VK_I);
+        sync.addActionListener(this);
+        syncLabel.setText("Last Sync Date: " + f.getLastSyncDate());
+        historyLabel.setText("# of Days Recorded: " + f.getHistory().size() + " Last Date: " + f.getLastDayDate());
+        syncLabel.setLabelFor(sync);
+        
+        JPanel pane = new JPanel(new GridLayout(0, 2));
+        pane.add(sync);
+        pane.add(changeDisplay);
+        pane.add(historyLabel);
+        pane.add(syncLabel, BorderLayout.SOUTH);
+        pane.setBorder(BorderFactory.createEmptyBorder(
+                30, //top
+                100, //left
+                10, //bottom
+                100) //right
                 );
         
         return pane;
     }
     
     public void actionPerformed(ActionEvent e) {
-    	if(activeFrame == 1){
+     	if(activeFrame == 1){
     		if(e.getSource() == changeDisplay){
     			JPanel contents = this.createHeartbeatViewComponents();
     			frame.setContentPane(contents);
@@ -195,11 +207,22 @@ public class FitBitUI implements ActionListener{
         	}
     	}else if(activeFrame == 6){
         	if(e.getSource() == changeDisplay){
-    	    	JPanel contents = this.createStepViewComponents();
+    	    	JPanel contents = this.createSyncViewComponents();
     	    	frame.setContentPane(contents);
     		    frame.invalidate();
     		    frame.validate();
     	}
+    	}else if(activeFrame == 7){
+        	if(e.getSource() == changeDisplay){
+    	    	JPanel contents = this.createStepViewComponents();
+    	    	frame.setContentPane(contents);
+    		    frame.invalidate();
+    		    frame.validate();
+           	}else{
+           		f.sync();
+           		syncLabel.setText("Last Sync Date: " + f.getLastSyncDate());
+                historyLabel.setText("# of Days Recorded: " + f.getHistory().size() + " Last Date: " + f.getLastDayDate());
+           	}
   
     }
     }
@@ -207,49 +230,7 @@ public class FitBitUI implements ActionListener{
         changeDisplay.addActionListener(this);
     }
     
-    private static void initLookAndFeel() {
-        
-        // Swing allows you to specify which look and feel your program uses--Java,
-        // GTK+, Windows, and so on as shown below.
-        String lookAndFeel = null;
-        
-        if (LOOKANDFEEL != null) {
-            if (LOOKANDFEEL.equals("Metal")) {
-                lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
-            } else if (LOOKANDFEEL.equals("System")) {
-                lookAndFeel = UIManager.getSystemLookAndFeelClassName();
-            } else if (LOOKANDFEEL.equals("Motif")) {
-                lookAndFeel = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
-            } else if (LOOKANDFEEL.equals("GTK+")) { //new in 1.4.2
-                lookAndFeel = "com.sun.java.swing.plaf.gtk.GTKLookAndFeel";
-            } else {
-                System.err.println("Unexpected value of LOOKANDFEEL specified: "
-                        + LOOKANDFEEL);
-                lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
-            }
-            
-            try {
-                UIManager.setLookAndFeel(lookAndFeel);
-            } catch (ClassNotFoundException e) {
-                System.err.println("Couldn't find class for specified look and feel:"
-                        + lookAndFeel);
-                System.err.println("Did you include the L&F library in the class path?");
-                System.err.println("Using the default look and feel.");
-            } catch (UnsupportedLookAndFeelException e) {
-                System.err.println("Can't use the specified look and feel ("
-                        + lookAndFeel
-                        + ") on this platform.");
-                System.err.println("Using the default look and feel.");
-            } catch (Exception e) {
-                System.err.println("Couldn't get specified look and feel ("
-                        + lookAndFeel
-                        + "), for some reason.");
-                System.err.println("Using the default look and feel.");
-                e.printStackTrace();
-            }
-        }
-    }
-    
+   
     /**
      * Create the GUI and show it.  For thread safety,
      * this method should be invoked from the
@@ -257,8 +238,11 @@ public class FitBitUI implements ActionListener{
      */
     private static void createAndShowGUI() {
         //Set the look and feel.
-        initLookAndFeel();
-        
+        try{
+        UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
         //Make sure we have nice window decorations.
         JFrame.setDefaultLookAndFeelDecorated(true);
         

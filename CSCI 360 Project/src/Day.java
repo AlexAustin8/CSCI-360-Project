@@ -13,7 +13,13 @@ public class Day {
 		goalMet = goal;
 		avgHeartRate = avgRate;
 	}
-	
+	/**
+	 * 
+	 * @param d
+	 * @return 
+	 * 
+	 * Checks two Day objects against one another to see if the dates are equal
+	 */
 	public int compareTo(Day d){
 		if(this.date.compareTo(d.getDate()) < 0){
 			return -1;
