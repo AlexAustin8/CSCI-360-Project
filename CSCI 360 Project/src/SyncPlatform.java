@@ -3,38 +3,49 @@ import java.util.*;
 public class SyncPlatform {
 	private ArrayList<UserProfile> profiles = new ArrayList<UserProfile>();
 	
-	
-	public void initialize(String[] profileVals){		
-		//String[] profileVals = enterProfileData();
-		
+	//Allows for initialization process to occur without user input. Intended for testing purposes.
+	public String testInitialize(String[] profileVals){
 		UserProfile d = new UserProfile(profileVals);
 	    profiles.add(d);
-		
-		//As far as connection goes, we may want to consider using a "State" for connected and unconnected
-	    //Either way the whole "connectToDevice" will be left undefined for now
+		return profileVals[0];
+	}
+	
+	/**
+	 * 
+	 * @return profileID
+	 * 
+	 * The initialize method creates a UserProfile object with values specified by the user and then returns the profileID
+	 * To the FitBit device so that the two objects are connected.
+	 */
+	public String initialize(){
+		String[] profileVals = enterProfileData();
+		UserProfile d = new UserProfile(profileVals);
+	    profiles.add(d);
+		return profileVals[0];
 	}
 	
 	/**
 	 * The enterProfileData() function is used to get the user data that 
-	 * the profile will be instantiated with. For now, it is working though
-	 * Scanner and Print statements, but later, it will probably be necessary for 
-	 * us to figure out a way to make it work with a UI
+	 * the profile will be instantiated with. 
 	 * @return String array of values to create user profile with
 	 */
 	public String[] enterProfileData(){
-		String[] profileVals = new String[4]; 
+		String[] profileVals = new String[5]; 
 		Scanner in = new Scanner(System.in);
-		System.out.println("Please enter a Profile ID"); //For the sake of ensuring profile ID's are unique, we should 
-		profileVals[0] = in.nextLine(); //Find an algorithm to generate them later on
+		System.out.println("Please enter a Profile ID: "); 
+		profileVals[0] = in.nextLine();
 		
-		System.out.println("Please enter your name"); 
+		System.out.println("Please enter your name: ") ; 
 		profileVals[1] = in.nextLine(); 
 		
-		System.out.println("Please enter your strideLength"); 
+		System.out.println("Please enter your Stride Length (in feet): "); 
 		profileVals[2]= in.nextLine();
 				
-		System.out.println("Please enter your weight"); 
+		System.out.println("Please enter your weight (in pounds): "); 
 		profileVals[3] = in.nextLine(); 
+		
+		System.out.println("Please enter in your daily step goal: "); 
+		profileVals[4] = in.nextLine(); 
 		
 		in.close();
 		return profileVals;
@@ -58,25 +69,23 @@ public class SyncPlatform {
 		return null;
 		
 	}
-	/**
-	 * 
-	 * @param devHist-History from FitBit Device
-	 * @param profileHist- History from UserProfile
-	 * 
-	 * This function must find a way to calculate the difference in days
-	 * in the two ArrayList<Day> objects. Return type is currently set to void
-	 * because, due to lack of experience with the Calendar Class, I am unsure 
-	 * what exactly the return type will be.
-	 */
-	public void calcDateDifference(ArrayList<Day> devHist, ArrayList<Day> profileHist){
-	}
 	
 	public void addProfile(UserProfile up){
 		profiles.add(up);
 	}
 	
 	
-	
+	/**
+	 * 
+	 * @param devID
+	 * @param profileID
+	 * @param devHist
+	 * 
+	 *The profileSync method receives ArrayList <Day> devHist that is the history stored on a FitBitDevice
+	 *And checks it against the  ArrayList <Day> history of the profile specified by the profileID. Any days
+	 *Not present on the <Day> history of the profile are added, and then an assert is done to ensure that both
+	 *ArrayLists are identical
+	 */
 	public void profileSync(String devID, String profileID, ArrayList<Day> devHist){
 		if(devHist!=null){
 		  UserProfile u = getProfile(profileID);
@@ -98,7 +107,12 @@ public class SyncPlatform {
 	
 	//Methods to allow for FitBitDevice Interaction with User Profiles, Primarily For Testing/Prototype Purposes
 	
-	
+	/**
+	 * 
+	 * @param profileID
+	 * @param d
+	 * Adds Day d to the history of the UserProfile object with the specified profileID
+	 */
 	public void addtoProfileHistory(String profileID, Day d){
 		UserProfile temp = getProfile(profileID);
 		temp.addToHistory(d);
@@ -112,6 +126,13 @@ public class SyncPlatform {
 	     }
 	}
 	
+	/**
+	 * 
+	 * @param profileID
+	 * @param deviceID
+	 * Adds the specified device ID to the linkedDevices<String> ArrayList in the UserProfile Object with 
+	 * the Specified profileID
+	 */
 	public void addToLinkedDevices(String profileID, String deviceID){
 		UserProfile temp = getProfile(profileID);
 		temp.addToLinkedDevices(deviceID);

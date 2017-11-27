@@ -13,30 +13,21 @@ public class FitBitDevice {
 	private deviceClock clock =  new deviceClock();
 	private float strideLength;
 	private int stepGoal;
+	private String lastSync = "None";
 	private ArrayList<Day> history = new ArrayList<Day>();
 	private InputReader ir = new InputReader();
 	
-	//Constructors
+	/**
+	 * Constructor for the FitBitDevice Class. Randomly generates a Device ID to be used. 
+	 * The initialize process is performed automatically because this prototype is only a single system
+	 * and therefore, will always be connected.
+	 */
 	public FitBitDevice(){
-	}
-	
-    /**
-     * 
-     * @param id
-     * The purpose of this constructor is to make it so that a profile is created and usable.
-     * This is done for demonstration purposes.
-     */
-	public FitBitDevice(String id){
-		profileID = id;
+		setDeviceID();
 		sp = new SyncPlatform();
-		String[] vals = {id, "username", "2.3","423", "100"};
-		sp.initialize(vals);
+		profileID = sp.initialize();
 		connectToProfile();
 	}
-	
-	
-	
-	
 	
 	
 	//Method Definitions
@@ -52,7 +43,7 @@ public class FitBitDevice {
 		int steps = ir.getCurrentStepCount();
 		return (steps*strideLength);
 	}
-	
+
 	public void addToSteps(){
 		this.getDate();
 		ir.stepDetected();
@@ -77,9 +68,17 @@ public class FitBitDevice {
 		}
 	}
 	
-	public String getLastDayData(){
+	/**
+	 * 
+	 * @return String
+	 * Returns a string value representing the date of the last recorded Day value
+	 */
+	public String getLastDayDate(){
+		if(history.size() == 0){
+			return "No Date Found";
+		}
 		Day d = history.get(history.size()-1);
-		return d.toString();
+		return d.getDate();
 	}
 	
 	
@@ -113,10 +112,19 @@ public class FitBitDevice {
 		UserProfile up = sp.getProfile(profileID);
 		strideLength = up.getStrideLength();
 		stepGoal = up.getStepgoal();
+		up.addToLinkedDevices(deviceID);
 	}
-	
+	/**
+	 * The sync method calls upon the SyncPlatform Class's profileSync method with the deviceID, profileIDm and history variables
+	 * It also saves a value for lastSync, indicating the last date of sync.
+	 */
 	public void sync(){
-		 
+		connectToPlatform();
+		sp.profileSync(deviceID, profileID, history);
+		disconnect();
+		if(history.size()>0){
+		lastSync = history.get(history.size()-1).getDate();
+		}
 	}
 	
 	//Setter functions for the instance variables.
@@ -132,14 +140,13 @@ public class FitBitDevice {
 	public void setProfileID(String id){
 		profileID = id;
 	}
-	public void setSyncPlatform(SyncPlatform s){
-		sp = s;
-	}
-	
-	public void setDeviceID(String id){
-		deviceID = id;
-		//We may want to consider making this function work by randomly generating a 
-		//DeviceID, but we'll see
+	/**
+	 * Randomly generates a number to be used for the DeviceID of the class
+	 */
+	public void setDeviceID(){
+		Random devIdGen = new Random();
+		int devId = devIdGen.nextInt(1000) + 1;
+		deviceID = "" + devId;
 	}
 	
 	public void setStrideLength(float len){
@@ -162,6 +169,10 @@ public class FitBitDevice {
 	
 	public float getStrideLength(){
 		return strideLength;
+	}
+	
+	public String getLastSyncDate(){
+		return lastSync;
 	}
 	
 	
@@ -197,13 +208,16 @@ public class FitBitDevice {
 		return date;
 	}
 	
+	//Setters for connectivity states. in this prototype, they mainly exist for hypothetical purposes since no true "connection" must be performed
+	//However, these would play an important role in actual hardware implementation of the fitbit
+	
 	public void connectToPlatform(){
 		state = "Connected";
 	}
-	
-	public void profileSync(){
-		
+	public void disconnect(){
+		state = "Disconnected";
 	}
+	
 	
 
 	

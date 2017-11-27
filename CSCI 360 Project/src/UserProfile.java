@@ -18,6 +18,7 @@ public class UserProfile {
 		linkedDevices = new ArrayList<String>();
 		history = new ArrayList<Day>();
 		
+		
 	}
 	
 	public void addToLinkedDevices(String deviceId){
@@ -46,7 +47,12 @@ public class UserProfile {
 	public int getStepgoal(){
 		return stepGoal;
 	}
-	
+	/**
+	 * 
+	 * @param deviceID
+	 * @return
+	 * Tests to see if the deviceID specified exists in linkedDevices
+	 */
 	public boolean verifyLinkedDevice(String deviceID){
 		for(int i = 0; i< linkedDevices.size(); i++){
 			if(linkedDevices.get(i) == deviceID){
@@ -56,6 +62,13 @@ public class UserProfile {
 		return false;
 	
 	}
+	/**
+	 * 
+	 * @param newHist
+	 * @return
+	 * Tests to see if two ArrayList<Day> objects are equal and have all of the same objects in the 
+	 * same order.
+	 */
 	public boolean equalHistory(ArrayList<Day> newHist){
 	   if(newHist == null && this.history == null){
 		   return true; 

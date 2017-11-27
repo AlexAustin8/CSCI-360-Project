@@ -11,7 +11,7 @@ public class SyncTest extends TestCase {
 	    private Day one;
 	    private Day two;
 	    private Day three;
-	    private String[] vals = new String[]{"profile01","the name", "3536", "235", "42"};
+	    private String[] vals = new String[]{"profile01","the name", "3536", "235", "42", "100"};
 	    @Before
 	    public void setUp() throws Exception{
 	    	sp = new SyncPlatform();
@@ -26,7 +26,7 @@ public class SyncTest extends TestCase {
 	    //Tests The Sync operation with valid inputs, both have different values
 	    public void testSyncOperation1(){
 	    	try{
-	    		sp.initialize(vals);
+	    		sp.testInitialize(vals);
 	    		sp.addtoProfileHistory("profile01", one);
 	    		sp.addToLinkedDevices("profile01", "id");
 	    		ArrayList<Day> testHist = new ArrayList<Day>();
@@ -43,7 +43,7 @@ public class SyncTest extends TestCase {
 	    //Tests the Sync Operation with valid inputs, both have same values
 	    public void testSyncOperation2(){
 	    	try{
-	    		sp.initialize(vals);
+	    		sp.testInitialize(vals);
 	    		sp.addtoProfileHistory("profile01", one);
 	    		sp.addtoProfileHistory("profile01", two);
 	    		sp.addtoProfileHistory("profile01", three);
@@ -62,7 +62,7 @@ public class SyncTest extends TestCase {
 	    //Tests Sync Operation when invalid DeviceID is used
 	    public void testSyncOperation3(){
 	    	try{
-	    		sp.initialize(vals);
+	    		sp.testInitialize(vals);
 	    		sp.addtoProfileHistory("profile01", one);
 	    		sp.addToLinkedDevices("profile01", "id");
 	    		ArrayList<Day> testHist = new ArrayList<Day>();
@@ -79,7 +79,7 @@ public class SyncTest extends TestCase {
 	    //Tests Sync Operation with an empty History
 	    public void testSyncOperation4(){
 	    	try{
-	    		sp.initialize(vals);
+	    		sp.testInitialize(vals);
 	    		sp.addToLinkedDevices("profile01", "id");
 	    		ArrayList<Day> testHist = new ArrayList<Day>();
 	    		testHist.add(one);
@@ -95,7 +95,7 @@ public class SyncTest extends TestCase {
 	    //Tests Sync Operation for the unlikely event that FitBit Device has less data than the Profile
 	    public void testSyncOperation5(){
 	    	try{
-	    		sp.initialize(vals);
+	    		sp.testInitialize(vals);
 	    		sp.addtoProfileHistory("profile01", one);
 	    		sp.addtoProfileHistory("profile01", two);
 	    		sp.addtoProfileHistory("profile01", three);
@@ -112,7 +112,7 @@ public class SyncTest extends TestCase {
 	    //Tests Sync Operation in the case of null FitBitDevice Input
 	    public void testSyncOperation6(){
 	    	try{
-	    		sp.initialize(vals);
+	    		sp.testInitialize(vals);
 	    		sp.addtoProfileHistory("profile01", one);
 	    		sp.addtoProfileHistory("profile01", two);
 	    		sp.addtoProfileHistory("profile01", three);
