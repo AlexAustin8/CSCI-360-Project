@@ -98,7 +98,7 @@ public class FitBitDevice {
 		boolean goal = (stepGoal <= steps);
 		Day d = new Day(currDate, steps, dist,goal, avgRate);
 		history.add(d);
-		ir.resetSteps();
+		//ir.resetSteps();
 		return d;
 		
 	}
@@ -188,30 +188,6 @@ public class FitBitDevice {
 		return ir.getCurrentStepCount();
 	}
 	
-	public Day getDay(String date){
-		if(date == null){
-		}
-		for(int i=0; i<history.size(); i++){
-			if(history.get(i).getDate().compareTo(date) == 0){
-				return history.get(i);
-			}
-		}
-		return null;
-	}
-	
-	public int getDaySteps(String date){
-		if(date == null){
-			return 0;
-		}
-		for(int i=0; i<history.size(); i++){
-			if(history.get(i).getDate().compareTo(date) == 0){
-				Day d =  history.get(i);
-				return d.getSteps();
-			}
-		}
-		return 0;
-	}
-	
 	
 	/**
 	 * 
@@ -222,6 +198,7 @@ public class FitBitDevice {
 	
 	public String getDate(){
 		String date = clock.getDate();
+		
 		if(currDate.compareTo("unset")==0){
 			currDate = date;
 		}else if(currDate.compareTo(date) != 0){

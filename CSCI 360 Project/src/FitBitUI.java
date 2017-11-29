@@ -3,8 +3,6 @@
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -19,256 +17,81 @@ import java.awt.*;
 import java.awt.event.*;
 
 
-public class FitBitUI implements ActionListener{
+public class FitBitUI extends Thread implements ActionListener, KeyListener {
     private int activeFrame = 0;
     private static JFrame frame = new JFrame();
     private JButton changeDisplay = new JButton("Change Display");
-    private FitBitDevice f = new FitBitDevice();
+    private FitBitDevice device = new FitBitDevice();
     final JLabel stepLabel = new JLabel("Number of Steps Taken: " + "0    ");
     final JLabel heartLabel = new JLabel("Current Heart Rate: " + "0    ");
-    final JLabel timeLabel = new JLabel("Current Time: " + f.getTime());
-    final JLabel dateLabel = new JLabel("Current Date: " + f.getDate());
-    final JLabel goalLabel = new JLabel("Steps Until Goal Reached: " + "0    ");
+    final JLabel timeLabel = new JLabel("Current Time: " + device.getTime());
+    final JLabel dateLabel = new JLabel("Current Date: " + device.getDate());
+    final JLabel goalLabel = new JLabel("Steps Until Goal Reached: " + device.getStepsUntilGoal());
     final JLabel historyLabel = new JLabel("# of Days Recorded: " + "0    ");
     final JLabel syncLabel = new JLabel("Last Sync Date");
     final static String LOOKANDFEEL = "System";
     
-    /**
-     * 
-     * @return stepViewPane
-     * Creates and returns pane to be used for stepView screen
-     */
-    public JPanel createStepViewComponents() {
-    	activeFrame = 1;
-        JButton takeStep = new JButton("Take Step");
-        takeStep.setMnemonic(KeyEvent.VK_I);
-        takeStep.addActionListener(this);
-        stepLabel.setLabelFor(takeStep);
-        JPanel pane = new JPanel(new GridLayout(0, 2));
-        pane.add(takeStep);
-        pane.add(changeDisplay);
-        pane.add(stepLabel);
-        pane.setBorder(BorderFactory.createEmptyBorder(
-                30, //top
-                50, //left
-                10, //bottom
-                50) //right
-                );
-        
-        return pane;
-    }
-    /**
-     * 
-     * @return HeartbeatViewPane
-     * Creates and returns pane to be used for HeartbeatView screen
-     */
-    public JPanel createHeartbeatViewComponents() {
-    	activeFrame = 2;
-        JButton detectHeartbeat = new JButton("Detect Heartbeat");
-        detectHeartbeat.setMnemonic(KeyEvent.VK_I);
-        detectHeartbeat.addActionListener(this);
-        heartLabel.setLabelFor(detectHeartbeat);
-        
-        JPanel pane = new JPanel(new GridLayout(0, 2));
-        pane.add(detectHeartbeat);
-        pane.add(changeDisplay);
-        pane.add(heartLabel);
-        pane.setBorder(BorderFactory.createEmptyBorder(
-                30, //top
-                50, //left
-                10, //bottom
-                50) //right
-                );
-        
-        return pane;
+    public JPanel createComponents() {
+    	JButton takeStep = new JButton("Take Step");
+    	takeStep.addActionListener(this);
+    	JButton detectHeartbeat = new JButton("Detect Heartbeat");
+    	detectHeartbeat.addActionListener(this);
+    	JButton showTime = new JButton ("Show Current Time");
+    	showTime.addActionListener(this);
+    	JButton newSync = new JButton("Sync Device");
+    	newSync.addActionListener(this);
+    	BorderLayout layout = new BorderLayout();
+    	JPanel pane = new JPanel(layout);
+    	pane.addKeyListener(this);
+    	pane.setFocusable(true);
+    	//pane.add(takeStep);
+    	//pane.add(detectHeartbeat);
+    	pane.add(newSync);
+    	pane.add(stepLabel, layout.PAGE_END);
+    	pane.add(heartLabel, layout.LINE_START);
+    	pane.add(timeLabel, layout.PAGE_START);
+    	//pane.add(dateLabel, layout.CENTER);
+    	pane.add(goalLabel, layout.LINE_END);
+    	start();
+    	return pane;
+    	
     }
     
+
     
-    /**
-     * 
-     * @return TimeViewPane
-     * Creates and returns pane to be used forTimeView screen
-     */
-    public JPanel createTimeViewComponents() {
-    	activeFrame = 3;
-        JPanel pane = new JPanel(new GridLayout(0, 1));
-        pane.add(changeDisplay);
-        pane.add(timeLabel);
-        int i = 0;
-        pane.setBorder(BorderFactory.createEmptyBorder(
-                30, //top
-                50, //left
-                10, //bottom
-                50) //right
-                );
-        
-        return pane;
-    }
-    
-    /**
-     * 
-     * @return DateViewPane
-     * Creates and returns pane to be used for DateView screen
-     */
-    public JPanel createDateViewComponents() {
-    	activeFrame = 4;
-        JPanel pane = new JPanel(new GridLayout(0, 1));
-        pane.add(changeDisplay);
-        pane.add(dateLabel);
-        pane.setBorder(BorderFactory.createEmptyBorder(
-                30, //top
-                50, //left
-                10, //bottom
-                50) //right
-                );
-        
-        return pane;
-    }
-    
-    /**
-     * 
-     * @return GoalViewPane
-     * Creates and returns pane to be used for GoalView screen
-     */
-    public JPanel createGoalViewComponents() {
-    	activeFrame = 5;
-        JPanel pane = new JPanel(new GridLayout(0, 1));
-        pane.add(changeDisplay);
-        goalLabel.setText("Steps until goal reached: " + f.getStepsUntilGoal());
-        pane.add(goalLabel);
-        pane.setBorder(BorderFactory.createEmptyBorder(
-                30, //top
-                50, //left
-                10, //bottom
-                50) //right
-                );
-        
-        return pane;
-    }
-    
-    /**
-     * 
-     * @return HistoryViewPane
-     * Creates and returns pane to be used for HistoryView screen
-     */
-    public JPanel createHistoryViewComponents() {
-    	activeFrame = 6;
-        JPanel pane = new JPanel(new GridLayout(0, 1));
-        pane.add(changeDisplay);
-        historyLabel.setText("Days Recorded: " + f.getHistory().size() + " Last Date: " + f.getLastDayDate());
-        pane.add(historyLabel);
-        pane.setBorder(BorderFactory.createEmptyBorder(
-                30, //top
-                50, //left
-                10, //bottom
-                50) //right
-                );
-        
-        return pane;
-    }
-    /**
-     * 
-     * @return SyncViewPane
-     * Creates and returns pane to be used for SyncView screen
-     */
-    public JPanel createSyncViewComponents() {
-    	activeFrame = 7;
-        JButton sync = new JButton("Sync Device");
-        sync.setMnemonic(KeyEvent.VK_I);
-        sync.addActionListener(this);
-        syncLabel.setText("Last Sync Date: " + f.getLastSyncDate() + ", " + f.getDaySteps(f.getLastSyncDate()));
-        
-        JPanel pane = new JPanel(new GridLayout(0, 1));
-        pane.add(sync);
-        pane.add(changeDisplay);
-        pane.add(syncLabel, BorderLayout.SOUTH);
-        pane.setBorder(BorderFactory.createEmptyBorder(
-                30, //top
-                50, //left
-                10, //bottom
-                50) //right
-                );
-        
-        return pane;
-    }
-    /**
-     * the action performed method checks the current active frame, detects
-     * the button that caused the response, and acts accordingly
-     */
-    public void actionPerformed(ActionEvent e) {
-     	if(activeFrame == 1){
-    		if(e.getSource() == changeDisplay){
-    			JPanel contents = this.createHeartbeatViewComponents();
-    			frame.setContentPane(contents);
-    			frame.invalidate();
-    			frame.validate();
-    	    }else{
-    	    	f.addToSteps();
-        		stepLabel.setText("Current Step Count: " + f.getCurrentSteps());
-    		     
-    		}
-    	}else if(activeFrame == 2){
-    		if(e.getSource() == changeDisplay){
-    			JPanel contents = this.createTimeViewComponents();
-    			frame.setContentPane(contents);
-    			frame.invalidate();
-    			frame.validate();
-    		}else{
-    		    f.detectHeartbeat();
-   		        heartLabel.setText("Current Heart Rate: " + f.getCurrentHeartrate());
-    		
-    		}
-    	}else if(activeFrame == 3){
-    		if(e.getSource() == changeDisplay){
-    			JPanel contents = this.createDateViewComponents();
-    			frame.setContentPane(contents);
-    			frame.invalidate();
-    			frame.validate();
-    		}
-    	}else if(activeFrame == 4){
-        	if(e.getSource() == changeDisplay){
-        		JPanel contents = this.createGoalViewComponents();
-        		frame.setContentPane(contents);
-        		frame.invalidate();
-        		frame.validate();
-        	}
-       }else if(activeFrame == 5){
-        	if(e.getSource() == changeDisplay){
-    	    	JPanel contents = this.createHistoryViewComponents();
-    	    	frame.setContentPane(contents);
-    		    frame.invalidate();
-    		    frame.validate();
-        	}
-    	}else if(activeFrame == 6){
-        	if(e.getSource() == changeDisplay){
-    	    	JPanel contents = this.createSyncViewComponents();
-    	    	frame.setContentPane(contents);
-    		    frame.invalidate();
-    		    frame.validate();
+    //
+    public void keyPressed(KeyEvent e) {
+    	if (e.getKeyChar() == 's') {
+    		device.addToSteps();
+    		stepLabel.setText("Number of Steps Taken: " + device.getCurrentSteps());
+    		goalLabel.setText("Steps Until Goal Reached: " + device.getStepsUntilGoal());
     	}
-    	}else if(activeFrame == 7){
-        	if(e.getSource() == changeDisplay){
-    	    	JPanel contents = this.createStepViewComponents();
-    	    	frame.setContentPane(contents);
-    		    frame.invalidate();
-    		    frame.validate();
-           	}else{
-           		f.sync();
-           		syncLabel.setText("Last Sync Date: " + f.getLastSyncDate() + ", " + f.getDaySteps(f.getLastSyncDate()));
-                
-           	}
-  
-    }
     }
     
-    /**
-     * Adds an actionListener to the class button changeDisplay
-     * so that all can use it
-     */
-    public void setChangeListener(){
-        changeDisplay.addActionListener(this);
+    public void keyReleased(KeyEvent e) {
     }
     
+    public void keyTyped(KeyEvent e) {
+    }
+    
+    public void actionPerformed(ActionEvent e) {
+    	if (e.getActionCommand() == "Take Step") {
+    		device.addToSteps();
+    		stepLabel.setText("Number of Steps Taken: " + device.getCurrentSteps());
+    		goalLabel.setText("Steps Until Goal Reached: " + device.getStepsUntilGoal());
+    	}
+    	else if (e.getActionCommand() == "Detect Heartbeat") {
+    		device.detectHeartbeat();
+    		heartLabel.setText("Current Heart Rate: " + device.getCurrentHeartrate());
+    	}
+    	else if (e.getActionCommand() == "Show Current Time") {
+    		timeLabel.setText("Current Time: " + device.getTime());
+    	}
+    	else if (e.getActionCommand() == "Sync Device") {
+    		
+    	}
+
+    }
    
     /**
      * Create the GUI and show it.  For thread safety,
@@ -288,8 +111,7 @@ public class FitBitUI implements ActionListener{
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         FitBitUI app = new FitBitUI();
-        app.setChangeListener();
-        JPanel stepContents = app.createStepViewComponents();
+        JPanel stepContents = app.createComponents();
         
         frame.getContentPane().add(stepContents, BorderLayout.CENTER);
         
@@ -298,14 +120,22 @@ public class FitBitUI implements ActionListener{
         frame.setVisible(true);
     }
     
+    public void run() {
+    	try {
+    	while (true) {
+    		timeLabel.setText("Current Time: " + device.getTime());
+    		Thread.sleep(1000);
+    	}
+    	}
+    	catch (Exception e) {
+    		System.out.println(e);
+    	}
+    }
+    
     public static void main(String[] args) {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
+    	createAndShowGUI();
     }
 }
 

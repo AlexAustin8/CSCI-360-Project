@@ -36,10 +36,6 @@ public class Day {
 		return date;
 	}
 	
-	public int getSteps(){
-		return stepsTaken;
-	}
-	
 	
 	public String toString(){
 		String goal =  "Step Goal Was Not Met";
