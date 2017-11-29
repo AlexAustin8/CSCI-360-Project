@@ -57,9 +57,7 @@ public class FitBitUI extends Thread implements ActionListener, KeyListener {
     	return pane;
     	
     }
-    
 
-    
     //
     public void keyPressed(KeyEvent e) {
     	if (e.getKeyChar() == 's') {
@@ -82,7 +80,7 @@ public class FitBitUI extends Thread implements ActionListener, KeyListener {
     		goalLabel.setText("Steps Until Goal Reached: " + device.getStepsUntilGoal());
     	}
     	else if (e.getActionCommand() == "Detect Heartbeat") {
-    		device.detectHeartbeat();
+    		//device.detectHeartbeat();
     		heartLabel.setText("Current Heart Rate: " + device.getCurrentHeartrate());
     	}
     	else if (e.getActionCommand() == "Show Current Time") {
@@ -125,6 +123,8 @@ public class FitBitUI extends Thread implements ActionListener, KeyListener {
     	try {
     	while (true) {
     		timeLabel.setText("Current Time: " + device.getTime());
+    		//device.detectHeartbeat();
+    		heartLabel.setText("Current Heart Rate: " + device.getCurrentHeartrate());
     		Thread.sleep(1000);
     	}
     	}

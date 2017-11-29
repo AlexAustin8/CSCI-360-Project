@@ -1,12 +1,16 @@
 import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 import java.util.*;
+import java.util.Random;
 
 public class InputReader {
 	private int currentStepCount;
+	private int previousStepCount = 0;
+	private int differenceOfStepCount;
 	private int currentHeartRate;
 	private ArrayList<Instant> heartBeatArray = new ArrayList<Instant>();
 	private ArrayList<Integer> avgData = new ArrayList<Integer>();
+	private Random rand = new Random();
 
 	
 	
@@ -14,50 +18,29 @@ public class InputReader {
 		currentStepCount++;
 	}
 	
-	
-	
-	public void detectHeartbeat(){
-	    Instant t = Instant.now();
-	    heartBeatArray.add(t);
-	    
-	    
+	public void stepDifference() {
+		differenceOfStepCount = currentStepCount - previousStepCount;
+		previousStepCount = currentStepCount;
 	}
-	/**
-	 * The setCurrentHeartRate() method checks to see if there are at least 3 objects in heartBeatArray, and if so
-	 * converts the objects in to a value representing milliseconds since epoch date. The difference is then calculated
-	 * between the 2nd and 1st values, as well as the 3rd and 2nd values, and an average is then calculated from these two
-	 * values and this average is then computed in to a value that represents average bpm
-	 */
-	public void setCurrentHeartRate(){
-		if(heartBeatArray.size() < 3){
-			currentHeartRate = 0;
-		}else{
-		  Instant first = heartBeatArray.get(heartBeatArray.size()-1);
-		  Instant second = heartBeatArray.get(heartBeatArray.size()-2);
-	      Instant third = heartBeatArray.get(heartBeatArray.size()-3);
-		
-	    	//Get comparable values for the Instant variables
-		  long firstTime = first.toEpochMilli();
-		  long secondTime = second.toEpochMilli();
-		  long thirdTime = third.toEpochMilli();
-		
-		
-		  long oneTwoDiff = secondTime - firstTime;
-	   	  long twoThreeDiff = thirdTime - secondTime;
-		  long avg = (Math.abs(oneTwoDiff) + Math.abs(twoThreeDiff))/ 2;
-		  if (avg == 0){
-		  	  currentHeartRate = 0;
-		  }else{
-  		      avg = 60000 / avg;
-	       	  avgData.add((int)avg);
-		      currentHeartRate = (int)avg;
+	
+	public int calculateHeartRate() {
+		if (differenceOfStepCount <= 0) {
+			if (currentHeartRate > 82) {
+				currentHeartRate = currentHeartRate - (rand.nextInt(7) + 3);
+			}
+			else {
+				currentHeartRate = 76 + rand.nextInt(7);
+			}
 		}
-				
-		
-	  }
+		else {
+			currentHeartRate = 76 + rand.nextInt(7) + (differenceOfStepCount * 10);
+		}
+		return 0;
 	}
 	
 	public int getCurrentHeartRate(){
+		stepDifference();
+		calculateHeartRate();
 		return currentHeartRate;
 	}
 	
@@ -109,6 +92,7 @@ public class InputReader {
 		return vals;
 		
 	}
+
 	
 		
 	}

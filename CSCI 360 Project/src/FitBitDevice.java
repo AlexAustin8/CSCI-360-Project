@@ -49,14 +49,13 @@ public class FitBitDevice {
 		ir.stepDetected();
 	}
 	
-	public void detectHeartbeat(){
-		this.getDate();
-		ir.detectHeartbeat();
-	}
+//	public void detectHeartbeat(){
+//		this.getDate();
+//		ir.detectHeartbeat();
+//	}
 	
 	public int getCurrentHeartrate(){
 		this.getDate();
-		ir.setCurrentHeartRate();
 		return ir.getCurrentHeartRate();
 	}
 	
