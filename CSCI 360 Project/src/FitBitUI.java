@@ -32,18 +32,19 @@ public class FitBitUI extends Thread implements ActionListener, KeyListener {
     final static String LOOKANDFEEL = "System";
     
     public JPanel createComponents() {
-    	JButton takeStep = new JButton("Take Step");
-    	takeStep.addActionListener(this);
-    	JButton detectHeartbeat = new JButton("Detect Heartbeat");
-    	detectHeartbeat.addActionListener(this);
-    	JButton showTime = new JButton ("Show Current Time");
-    	showTime.addActionListener(this);
+    	//JButton takeStep = new JButton("Take Step");
+    	//takeStep.addActionListener(this);
+    	//JButton detectHeartbeat = new JButton("Detect Heartbeat");
+    	//detectHeartbeat.addActionListener(this);
+    	//JButton showTime = new JButton ("Show Current Time");
+    	//showTime.addActionListener(this);
     	JButton newSync = new JButton("Sync Device");
     	newSync.addActionListener(this);
     	BorderLayout layout = new BorderLayout();
     	JPanel pane = new JPanel(layout);
     	pane.addKeyListener(this);
     	pane.setFocusable(true);
+    	newSync.setFocusable(false);
     	//pane.add(takeStep);
     	//pane.add(detectHeartbeat);
     	pane.add(newSync);
