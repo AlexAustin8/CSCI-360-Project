@@ -1,4 +1,4 @@
- //Note that this code is primarily a modification of the SwingApplication.java file
+  //Note that this code is primarily a modification of the SwingApplication.java file
 //Provided in the Java swing Exercise, and therefore is not wholly original material
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -19,11 +19,12 @@ import java.awt.*;
 import java.awt.event.*;
 
 
-public class FitBitUI implements ActionListener{
+
+public class FitBitUI extends Thread implements ActionListener{
     private int activeFrame = 0;
     private static JFrame frame = new JFrame();
     private JButton changeDisplay = new JButton("Change Display");
-    private FitBitDevice f = new FitBitDevice();
+    private FitBitDevice f = new FitBitDevice("something");
     final JLabel stepLabel = new JLabel("Number of Steps Taken: " + "0    ");
     final JLabel heartLabel = new JLabel("Current Heart Rate: " + "0    ");
     final JLabel timeLabel = new JLabel("Current Time: " + f.getTime());
@@ -94,7 +95,6 @@ public class FitBitUI implements ActionListener{
         JPanel pane = new JPanel(new GridLayout(0, 1));
         pane.add(changeDisplay);
         pane.add(timeLabel);
-        int i = 0;
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
                 50, //left
@@ -212,6 +212,7 @@ public class FitBitUI implements ActionListener{
     			JPanel contents = this.createTimeViewComponents();
     			frame.setContentPane(contents);
     			frame.invalidate();
+    			this.run();
     			frame.validate();
     		}else{
     		    f.detectHeartbeat();
@@ -269,6 +270,7 @@ public class FitBitUI implements ActionListener{
         changeDisplay.addActionListener(this);
     }
     
+    
    
     /**
      * Create the GUI and show it.  For thread safety,
@@ -308,6 +310,5 @@ public class FitBitUI implements ActionListener{
         });
     }
 }
-
 
 
