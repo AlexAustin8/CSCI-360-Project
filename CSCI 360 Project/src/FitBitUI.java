@@ -24,15 +24,16 @@ public class FitBitUI extends Thread implements ActionListener{
     private int activeFrame = 0;
     private static JFrame frame = new JFrame();
     private JButton changeDisplay = new JButton("Change Display");
-    private FitBitDevice f = new FitBitDevice("something");
+    private FitBitDevice device = new FitBitDevice("something");
     final JLabel stepLabel = new JLabel("Number of Steps Taken: " + "0    ");
     final JLabel heartLabel = new JLabel("Current Heart Rate: " + "0    ");
-    final JLabel timeLabel = new JLabel("Current Time: " + f.getTime());
-    final JLabel dateLabel = new JLabel("Current Date: " + f.getDate());
+    final JLabel timeLabel = new JLabel("Current Time: " + device.getTime());
+    final JLabel dateLabel = new JLabel("Current Date: " + device.getDate());
     final JLabel goalLabel = new JLabel("Steps Until Goal Reached: " + "0    ");
     final JLabel historyLabel = new JLabel("# of Days Recorded: " + "0    ");
     final JLabel syncLabel = new JLabel("Last Sync Date");
     final static String LOOKANDFEEL = "System";
+    
     
     /**
      * 
@@ -55,6 +56,8 @@ public class FitBitUI extends Thread implements ActionListener{
                 10, //bottom
                 50) //right
                 );
+
+        start();
         
         return pane;
     }
@@ -134,7 +137,7 @@ public class FitBitUI extends Thread implements ActionListener{
     	activeFrame = 5;
         JPanel pane = new JPanel(new GridLayout(0, 1));
         pane.add(changeDisplay);
-        goalLabel.setText("Steps until goal reached: " + f.getStepsUntilGoal());
+        goalLabel.setText("Steps until goal reached: " + device.getStepsUntilGoal());
         pane.add(goalLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
@@ -155,7 +158,7 @@ public class FitBitUI extends Thread implements ActionListener{
     	activeFrame = 6;
         JPanel pane = new JPanel(new GridLayout(0, 1));
         pane.add(changeDisplay);
-        historyLabel.setText("Days Recorded: " + f.getHistory().size() + " Last Date: " + f.getLastDayDate());
+        historyLabel.setText("Days Recorded: " + device.getHistory().size() + " Last Date: " + device.getLastDayDate());
         pane.add(historyLabel);
         pane.setBorder(BorderFactory.createEmptyBorder(
                 30, //top
@@ -176,7 +179,7 @@ public class FitBitUI extends Thread implements ActionListener{
         JButton sync = new JButton("Sync Device");
         sync.setMnemonic(KeyEvent.VK_I);
         sync.addActionListener(this);
-        syncLabel.setText("Last Sync Date: " + f.getLastSyncDate() + ", " + f.getDaySteps(f.getLastSyncDate()));
+        syncLabel.setText("Last Sync Date: " + device.getLastSyncDate() + ", " + device.getDaySteps(device.getLastSyncDate()));
         
         JPanel pane = new JPanel(new GridLayout(0, 1));
         pane.add(sync);
@@ -203,8 +206,8 @@ public class FitBitUI extends Thread implements ActionListener{
     			frame.invalidate();
     			frame.validate();
     	    }else{
-    	    	f.addToSteps();
-        		stepLabel.setText("Current Step Count: " + f.getCurrentSteps());
+    	    	device.addToSteps();
+        		stepLabel.setText("Current Step Count: " + device.getCurrentSteps());
     		     
     		}
     	}else if(activeFrame == 2){
@@ -212,11 +215,10 @@ public class FitBitUI extends Thread implements ActionListener{
     			JPanel contents = this.createTimeViewComponents();
     			frame.setContentPane(contents);
     			frame.invalidate();
-    			this.run();
     			frame.validate();
     		}else{
-    		    f.detectHeartbeat();
-   		        heartLabel.setText("Current Heart Rate: " + f.getCurrentHeartrate());
+    		    device.detectHeartbeat();
+   		        heartLabel.setText("Current Heart Rate: " + device.getCurrentHeartrate());
     		
     		}
     	}else if(activeFrame == 3){
@@ -254,8 +256,8 @@ public class FitBitUI extends Thread implements ActionListener{
     		    frame.invalidate();
     		    frame.validate();
            	}else{
-           		f.sync();
-           		syncLabel.setText("Last Sync Date: " + f.getLastSyncDate() + ", " + f.getDaySteps(f.getLastSyncDate()));
+           		device.sync();
+           		syncLabel.setText("Last Sync Date: " + device.getLastSyncDate() + ", " + device.getDaySteps(device.getLastSyncDate()));
                 
            	}
   
@@ -300,14 +302,24 @@ public class FitBitUI extends Thread implements ActionListener{
         frame.setVisible(true);
     }
     
+    public void run() {
+    	try {
+    	while (true) {
+    		timeLabel.setText("Current Time: " + device.getTime());
+    		//device.detectHeartbeat();
+    		Thread.sleep(1000);
+    	}
+    	}
+    	catch (Exception e) {
+    		System.out.println(e);
+    	}
+    }
+    
     public static void main(String[] args) {
         //Schedule a job for the event-dispatching thread:
         //creating and showing this application's GUI.
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                createAndShowGUI();
-            }
-        });
+        createAndShowGUI();
+        
     }
 }
 
