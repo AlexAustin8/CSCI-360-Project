@@ -32,6 +32,7 @@ public class FitBitUI extends Thread implements ActionListener{
     final JLabel goalLabel = new JLabel("Steps Until Goal Reached: " + "0    ");
     final JLabel historyLabel = new JLabel("# of Days Recorded: " + "0    ");
     final JLabel syncLabel = new JLabel("Last Sync Date");
+    private boolean activeTime = false;
     final static String LOOKANDFEEL = "System";
     
     
@@ -56,8 +57,12 @@ public class FitBitUI extends Thread implements ActionListener{
                 10, //bottom
                 50) //right
                 );
-
-        start();
+        
+        //To make sure that start() is not initiated twice
+        if(!activeTime){
+           start();
+           activeTime = true;
+        }
         
         return pane;
     }
