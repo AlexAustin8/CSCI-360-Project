@@ -20,13 +20,20 @@ public class FitBitDevice {
 	/**
 	 * Constructor for the FitBitDevice Class. Randomly generates a Device ID to be used. 
 	 * The initialize process is performed automatically because this prototype is only a single system
-	 * and therefore, will always be connected.
+	 * and therefore, will always be connected. This is the constructor used for demonstration purposes and automatically starts initialization()
+	 * 
 	 */
-	public FitBitDevice(){
+	public FitBitDevice(String s){
 		setDeviceID();
 		sp = new SyncPlatform();
 		profileID = sp.initialize();
 		connectToProfile();
+	}
+	
+	/**
+	 * Default constructor used for testing purposes.
+	 */
+	public FitBitDevice(){
 	}
 	
 	
@@ -92,9 +99,9 @@ public class FitBitDevice {
 	 */
 	
 	public Day saveDay(){
-		float dist = calculateDistance();
 		int steps = ir.getCurrentStepCount();
 		int avgRate = ir.getAvgHeartRate();
+		float dist = calculateDistance();
 		boolean goal = (stepGoal <= steps);
 		Day d = new Day(currDate, steps, dist,goal, avgRate);
 		history.add(d);

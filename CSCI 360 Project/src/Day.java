@@ -21,6 +21,9 @@ public class Day {
 	 * Checks two Day objects against one another to see if the dates are equal
 	 */
 	public int compareTo(Day d){
+		if(d == null){
+			return -3;
+		}
 		if(this.date.compareTo(d.getDate()) < 0){
 			return -1;
 		}
